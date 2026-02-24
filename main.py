@@ -6,7 +6,10 @@ def get_hosts(full_ip):
     mask = int(split_ip[1])
     hosts = []
 
-    if mask >= 24:
+    if mask == 32:
+        return [split_ip[0]]
+    
+    elif mask >= 24:
         first_part = ip[0]
         second_part = ip[1]
         third_part = ip[2]
@@ -41,27 +44,28 @@ def get_hosts(full_ip):
     return hosts
 
 def ping(ip):
-    command = ['ping', '-c', '1', '-W', '1', ip]
-    ping_result = subprocess.run(command, capture_output=True, text=True)
+    try:
+        command = ['ping', '-c', '1', '-W', '1', ip]
+        ping_result = subprocess.run(command, capture_output=True, text=True)
     
-    if ping_result.returncode == 0:
-        status = 'UP'
-    else:
-        status = 'DOWN'
+        if ping_result.returncode == 0:
+            status = 'UP'
+            split_stdout = ping_result.stdout.split('time=')
+            ping_time = split_stdout[1].split("\n")[0]
+        else:
+            status = 'DOWN'
+            ping_time = 'No response'
+    except:
+        status = 'Error'
+        ping_time = 'Error occured'
 
-
-
-    print(ping_result)
-    print(status)
-    split_stdout = ping_result.stdout.split('time=')
-    ping_time = split_stdout[1].split("\n")[0]
-    print(ping_time)
+    return f"{ip}  -  {status} ({ping_time})"
 
 def main():
     ip = input("Input IP in CIDR notation: ")
     hosts = get_hosts(ip)
-    print(hosts)
+    for host in hosts:
+        print(ping(host))
 
-
-
-ping("8.8.8.8")
+if __name__ == "__main__":
+    main()
