@@ -24,12 +24,12 @@ Run **main.py**, using python3, in the terminal
 
 Basic usage:
 
-![Screenshot of Basic Usage](screenshot/basic.png)
+![Screenshot of Basic Usage](screenshots/basic.png)
 
 
 Advanced usage:
 
-![Screenshot of Advanced Usage](screenshot/advanced.png)
+![Screenshot of Advanced Usage](screenshots/advanced.png)
 
 
 Intended flow of the program:
