@@ -34,8 +34,10 @@ Advanced usage:
 
 Intended flow of the program:
 1. The program asks for an IP address in CIDR notation
-2. The program calculates the IP range
-3. The program pings each IP in the range
+2. The user inputs an IP with or without ports
+3. The program calculates the IP range
+4. The program pings each IP in the range
+5. The program checks if each port is open for each IP that's up
 
 
 ## Contributing
