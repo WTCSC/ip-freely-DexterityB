@@ -1,4 +1,5 @@
 import subprocess
+import socket
 
 def get_hosts(full_ip):
     split_ip = full_ip.split("/")
@@ -59,13 +60,44 @@ def ping(ip):
         status = 'Error'
         ping_time = 'Error occured'
 
-    return f"{ip}  -  {status} ({ping_time})"
+    return ip, status, ping_time
+
+def get_ports(ports):
+    if len(ports.split('-')) > 1:
+        port_list = [port for port in range(int(ports.split('-')[0]), int(ports.split('-')[1]) + 1)]
+        
+    else:
+        port_list = ports.split(',')
+
+    return port_list
+
+def check_port(ip, port, timeout = 3):
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.settimeout(timeout)
+
+    port_open = sock.connect_ex((ip, port))
+
+    sock.close
+    return port_open == 0
 
 def main():
+    do_ports = False
     ip = input("Input IP in CIDR notation: ")
+    
+    if len(ip.split(" ")) > 1:
+        ports = get_ports(ip.split(" ")[1])
+        ip = ip.split(" ")[2]
+
+        do_ports = True
+
     hosts = get_hosts(ip)
     for host in hosts:
-        print(ping(host))
+        result_ip, result_status, result_ping_time = ping(host)
+        print(f"{result_ip}  -  {result_status} ({result_ping_time})")
+
+        if do_ports and result_status == 'UP':
+            for port in ports:
+                print(f"Port {port} Open: {check_port(host, int(port))}")
 
 if __name__ == "__main__":
     main()
